@@ -87,7 +87,6 @@
 |         git add [文件名称]          |    将文件的修改加入暂存区    |
 |        git reset [文件名称]         |    将暂存区的文件取消暂存    |
 |      git reset —hard [版本号]       |        切换到指定版本        |
-|         git commit [文件名]         |  将暂存区文件提交到版本库中  |
 |      git commit -m “日志信息”       | 将暂存区的文件提交到版本库中 |
 |               git log               |           查看日志           |
 |             git reflog              |         查看历史记录         |
@@ -96,17 +95,18 @@
 
 ### 远程仓库常用命令
 
-|                 命令                 |            功能            |
-| :----------------------------------: | :------------------------: |
-|              git remote              |        查看远程仓库        |
-|            git remote -v             |  查看当前所有远程地址别名  |
-|  git remote add [short-name] [url]   |        添加远程仓库        |
-|      git remote rm [short-name]      |        移除远程仓库        |
-|           git clone [url]            | 从远程仓库克隆（首次拉取） |
-| git pull [origin-name] [branch-name] |       从远程仓库拉取       |
-| git push [origin-name] [branch-name] |       推送到远程仓库       |
+|                  命令                   |                        功能                        |
+| :-------------------------------------: | :------------------------------------------------: |
+|               git remote                |                    查看远程仓库                    |
+|              git remote -v              |              查看当前所有远程地址别名              |
+|    git remote add [short-name] [url]    |              添加远程仓库并为其取别名              |
+|       git remote rm [short-name]        |                    移除远程仓库                    |
+|             git clone [url]             |             从远程仓库克隆（首次拉取）             |
+|  git pull [origin-name] [branch-name]   |                   从远程仓库拉取                   |
+|  git push [origin-name] [branch-name]   |        推送到远程仓库（需使用ssh免密登录）         |
+| git push -u [origin-name] [branch-name] | 推送到远程仓库(使用https登录，密码现在改为了token) |
 
-Note：一般取[short-name]为origin
+Note：默认取[short-name]为origin
 
 ## 分支操作
 
@@ -129,7 +129,7 @@ Note：一般取[short-name]为origin
 |        git branch [branch-name]        |                  创建分支                  |
 |       git checkout [branch-name]       |                  切换分支                  |
 |  git push [short-Name] [branch-name]   |             推送至远程仓库分支             |
-|        git merge [branch-name]         | 合并分支（将令一分支的内容融合到当前分支） |
+|        git merge [branch-name]         | 合并分支（将另一分支的内容融合到当前分支） |
 |      git branch -d [branch-name]       |                  删除分支                  |
 |      git branch -D [branch-name]       | 删除分支（即使该分支中进行了一些开发动作） |
 | git push [short-Name] –d [branch-name] |            删除远程仓库中的分支            |
@@ -177,14 +177,14 @@ git commit -m "注释"
 然后复制远程仓库的 SSH 地址，执行如下命令将本地仓库与远程仓库关联起来，关于 git remote add 命令可以参考这篇文章。
 
 ```
-git remote add origin 远程仓库的SSH地址
+git remote add "别名" 远程仓库的SSH地址
 ```
 
 
 将文件上传到 GitHub 的远程仓库：
 
 ```
-git push -u origin master
+git push "别名" master
 ```
 
 # Note：解决ideal克隆时出现unable to access : Failed to connect to github.com port 443: Timed out

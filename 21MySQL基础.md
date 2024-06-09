@@ -1,21 +1,102 @@
 
 
-# 导入表的问题
 
-**导入数据时外键约束问题**
 
-数据导入指令：（不要有中文路径）
+# 第0章_表的导入与导出
+
+## 导入表
+
+### 使用SOURCE导入数据.sql
+
+数据导入指令：
 
 ```mysql
 source d:\xxx.sql
 ```
 
-通过FOREIGN_KEY_CHECKS解决，用法如下：
+导入数据时可能会出现外键约束问题，可以通过FOREIGN_KEY_CHECKS解决，用法如下：
 
 ```mysql
 set FOREIGN_KEY_CHECKS=0;  #在导入前设置为不检查外键约束
 set FOREIGN_KEY_CHECKS=1;  #在导入后恢复检查外键约束
 ```
+
+### 使用LOAD DATA INFILE或mysqlimport导入数据.csv
+
+可以使用MySQL的`LOAD DATA INFILE`语句来导入数据。
+
+```mysql
+LOAD DATA INFILE 'path/to/output/file.csv'
+INTO TABLE your_table_name
+FIELDS TERMINATED BY ',' -- 指定字段分隔符，例如逗号
+ENCLOSED BY '"' -- 如果字段被引号包围的话
+LINES TERMINATED BY '\n' -- 指定行结束符
+IGNORE 1 LINES; -- 如果有标题头，忽略第一行
+```
+
+或者使用命令行导入：
+
+```mysql
+mysqlimport -u username -p your_database_name path/to/output/file.csv
+```
+
+通常，当数据量较大或者需要导入大量数据时，使用CSV文件导入更为方便高效。
+
+## 导出表
+
+### 使用mysqldump工具导出数据.sql
+
+mysqldump是MySQL数据库的一个命令行工具，用于备份和导出数据库、表格和数据。以下是使用mysqldump工具导出数据的基本语法：
+
+```mysql
+mysqldump -u username -p dbname table_name > /path/to/output/file.sql
+```
+
+-u: 指定MySQL的用户名。
+-p: 表示需要输入密码。
+dbname: 指定要导出数据的数据库名称。
+table_name: 指定要导出数据的表格名称。如果要导出整个数据库，可以省略该参数。
+/path/to/output/file.sql: 指定导出数据的输出文件路径。
+
+### 使用SELECT … INTO OUTFILE语句导出数据.csv
+
+SELECT … INTO OUTFILE语句是MySQL中用于将查询结果导出为CSV文件的方法。它允许您将查询结果保存到指定的文件路径中，以便进行后续处理或备份。
+
+示例：
+
+假设我们有一个名为"users"的表格，其中包含用户的姓名、年龄和电子邮件地址。要导出这些数据到一个CSV文件中，可以使用以下语句：
+
+```mysql
+SELECT * INTO OUTFILE '/path/to/output/file.csv' 
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"' 
+LINES TERMINATED BY '\n' 
+FROM users;
+```
+
+
+这将导出"users"表中的所有数据，并将其保存到指定路径的CSV文件中。文件中的每行代表一个用户，每个字段用逗号分隔，并用双引号包围。
+
+这将导出"users"表中的所有数据，并将其保存到指定路径的CSV文件中。文件中的每行代表一个用户，每个字段用逗号分隔，并用双引号包围。
+
+参数说明：
+
+INTO OUTFILE 'file_path': 指定要导出数据的文件路径。可以是本地路径或Web服务器上的路径。
+FIELDS TERMINATED BY 'delimiter': 指定字段之间的分隔符。默认情况下使用制表符（\t）作为分隔符。
+ENCLOSED BY 'enclosure': 指定字段内容的引号包围符号。默认情况下不使用引号包围。
+LINES TERMINATED BY 'line_break': 指定每行数据之间的分隔符。默认情况下使用换行符（\n）作为行分隔符。
+FROM table_name: 指定要导出数据的表格名称。
+注意事项：
+
+使用SELECT … INTO OUTFILE语句导出数据需要具有相应的权限。确保您具有足够的权限来执行此操作。
+导出的文件路径必须是MySQL服务器可以访问的路径。如果路径无法访问，您将无法导出数据。
+如果指定的文件已经存在，将会覆盖该文件。请确保在导出数据之前备份重要的文件。
+
+-u: 指定MySQL的用户名。
+-p: 表示需要输入密码。
+dbname: 指定要导出数据的数据库名称。
+table_name: 指定要导出数据的表格名称。如果要导出整个数据库，可以省略该参数。
+/path/to/output/file.sql: 指定导出数据的输出文件路径。
 
 # 第三章_最基本的SELECT语句
 
