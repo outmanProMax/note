@@ -1,0 +1,24 @@
+https://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4315540288891473363
+
+ctrl+b	转到声明
+
+ctrl+F12	查看大纲
+
+ctrl+alt+t	对选择的代码捕获异常
+
+选中对应数据+alt+insert	快速生成
+
+alt+enter	根据mapper接口中定义方法，自动生成映射配置文件mapper.xml中的 statement(必须安装mybatisx)
+
+ctrl+shift+o	maven变更
+
+ctrl+shift+/	快捷注释
+
+ctrl+shift+n	进行查找
+
+ctrl+o	快速重写
+
+ctrl+alt+u	查看类图
+
+ctrl+(shift)+r	批量替换（本项目）
+
