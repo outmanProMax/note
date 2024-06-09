@@ -345,6 +345,126 @@ StringBuilder 可以看成是一个容器，创建之后里面的内容是可变
 
  与StringBuilder类似，不同在于 StringBuffer的方法是线程安全的（能同步访问）， 但是速度较慢
 
+## 时间类
+
+### Date类
+
+- `public Date()`：从运行程序的此时此刻到时间原点经历的毫秒值,转换成Date对象，分配Date对象并初始化此对象，以表示分配它的时间（精确到毫秒）。
+
+- `public Date(long date)`：将指定参数的毫秒值date,转换成Date对象，分配Date对象并初始化此对象，以表示自从标准基准时间（称为“历元（epoch）”，即1970年1月1日00:00:00 GMT）以来的指定毫秒数。
+
+- `public long getTime()` 把日期对象转换成对应的时间毫秒值。
+
+- `public void setTime(long time)` 把方法参数给定的毫秒值设置给日期对象
+
+### SimpleDateFormat类
+
+**完成Date和String（指定格式）之间的转换**
+
+`java.text.SimpleDateFormat` 是日期/时间格式化类，我们通过这个类可以帮我们完成日期和文本之间的转换,也就是可以在Date对象与String对象之间进行来回转换
+
+- `public SimpleDateFormat(String pattern)`：用给定的模式和默认语言环境的日期格式符号构造SimpleDateFormat。参数pattern是一个字符串，代表日期时间的自定义格式。例如：SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+- `public String format(Date date)`：将Date对象格式化为字符串。
+- `public Date parse(String source)`：将字符串解析为Date对象。
+
+### Calendar类
+
+**根据字段修改时间**
+
+- java.util.Calendar类表示一个“日历类”，可以进行日期运算。它是一个抽象类，不能创建对象，我们可以使用它的子类：java.util.GregorianCalendar类。
+- 有两种方式可以获取GregorianCalendar对象：
+  - 直接创建GregorianCalendar对象；
+  - 通过Calendar的静态方法getInstance()方法获取GregorianCalendar对象
+
+| 方法名                                | 说明                                                         |
+| ------------------------------------- | ------------------------------------------------------------ |
+| public static Calendar getInstance()  | 获取一个它的子类GregorianCalendar对象。                      |
+| public int get(int field)             | 获取某个字段的值。field参数表示获取哪个字段的值，<br />可以使用Calender中定义的常量来表示：<br />Calendar.YEAR : 年<br />Calendar.MONTH ：月<br />Calendar.DAY_OF_MONTH：月中的日期<br />Calendar.HOUR：小时<br />Calendar.MINUTE：分钟<br />Calendar.SECOND：秒<br />Calendar.DAY_OF_WEEK：星期 |
+| public void set(int field,int value)  | 设置某个字段的值                                             |
+| public void add(int field,int amount) | 为某个字段增加/减少指定的值                                  |
+
+### JDK8中的时间类
+
+#### ZoneId 时区
+
+```java
+static Set<string> getAvailableZoneIds() 获取Java中支持的所有时区
+static ZoneId systemDefault() 获取系统默认时区
+static Zoneld of(string zoneld) 获取一个指定时区
+```
+
+#### Instant 时间戳
+
+```java
+/*
+static Instant now() 获取当前时间的Instant对象(标准时间)
+static Instant ofEpochXxxx(long epochMilli) 获取一个1970-01-01T00:00:00z经过epochMilli(秒/毫秒/纳秒)后的Instant对象
+ZonedDateTime atZone(ZoneIdzone) 指定时区
+boolean isxxx(Instant otherInstant) 判断系列的方法
+Instant minusXxx(long millisToSubtract) 减少时间系列的方法
+Instant plusXxx(long millisToSubtract) 增加时间系列的方法
+            */
+Instant now = Instant.now();
+
+Instant instant2 = Instant.ofEpochSecond(1L);//1970-01-01T00:00:01Z
+
+Instant.now().atZone(ZoneId.of("Asia/Shanghai"));
+
+boolean result1=instant4.isBefore(instant5);
+
+Instant instant7 =instant6.minusSeconds(1);
+
+Instant instant9 =instant8.plusSeconds(1);
+```
+
+#### DateTimeFormatter   用于时间的格式化和解析
+
+```java
+static DateTimeFormatter ofPattern(格式) 按照格式解析对象
+String format(时间对象) 按照指定方式格式化
+```
+
+#### ZoneDateTime  带时区的时间
+
+```java
+/*
+            static ZonedDateTime now() 获取当前时间的ZonedDateTime对象
+            static ZonedDateTime ofXxxx(。。。) 获取指定时间的ZonedDateTime对象
+            ZonedDateTime withXxx(时间) 修改时间系列的方法
+            ZonedDateTime minusXxx(时间) 减少时间系列的方法
+            ZonedDateTime plusXxx(时间) 增加时间系列的方法
+         */
+
+ZonedDateTime time1 = ZonedDateTime.of(2023, 10, 1,
+                                       11, 12, 12, 0, ZoneId.of("Asia/Shanghai"));
+```
+
+#### LocalDate、LacalTime、LocalDateTime时间
+
+![img](https://img-blog.csdnimg.cn/7574a8d24ee0473ea7508b5774a78d2c.png)
+
+#### Duration  时间间隔（可精确到纳秒）
+
+```java
+// 本地日期时间对象。
+LocalDateTime today = LocalDateTime.now();
+System.out.println(today);
+
+// 出生的日期时间对象
+LocalDateTime birthDate = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
+System.out.println(birthDate);
+
+Duration duration = Duration.between(birthDate, today);//第二个参数减第一个参数
+System.out.println("相差的时间间隔对象:" + duration);
+
+System.out.println("============================================");
+System.out.println(duration.toDays());//两个时间差的天数
+System.out.println(duration.toHours());//两个时间差的小时数
+System.out.println(duration.toMinutes());//两个时间差的分钟数
+System.out.println(duration.toMillis());//两个时间差的毫秒数
+System.out.println(duration.toNanos());//两个时间差的纳秒数
+```
+
 ## Arrays类
 
 ```java
@@ -409,33 +529,6 @@ public long totalMemory()				//JVM已经从系统中获取总内存大小（单�
 public long freeMemory()				//JVM剩余内存大小（单位byte）
 public Process exec(String command) 	//运行cmd命令
 ```
-
-## LocalDate类
-
-```
-  LocalDate l = LocalDate.now();
-  LocalDate l = LocalDate.of(1992.12.31);
-  int t = l.getYear();
-  int t = l.getMonthValue();
-  int t = l.getDayOfMonth();
-```
-
-## Date类
-
-- `public Date()`：从运行程序的此时此刻到时间原点经历的毫秒值,转换成Date对象，分配Date对象并初始化此对象，以表示分配它的时间（精确到毫秒）。
-
-- `public Date(long date)`：将指定参数的毫秒值date,转换成Date对象，分配Date对象并初始化此对象，以表示自从标准基准时间（称为“历元（epoch）”，即1970年1月1日00:00:00 GMT）以来的指定毫秒数。
-
-- `public long getTime()` 把日期对象转换成对应的时间毫秒值。
-
-- `public void setTime(long time)` 把方法参数给定的毫秒值设置给日期对象
-
-## SimpleDateFormat类
-`java.text.SimpleDateFormat` 是日期/时间格式化类，我们通过这个类可以帮我们完成日期和文本之间的转换,也就是可以在Date对象与String对象之间进行来回转换
-
-- `public SimpleDateFormat(String pattern)`：用给定的模式和默认语言环境的日期格式符号构造SimpleDateFormat。参数pattern是一个字符串，代表日期时间的自定义格式。例如：SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-- `public String format(Date date)`：将Date对象格式化为字符串。
-- `public Date parse(String source)`：将字符串解析为Date对象。
 
 ## BigDecimal/BigInteger
 
