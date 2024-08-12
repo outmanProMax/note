@@ -1,4 +1,4 @@
-## 数据格式
+# 数据格式
 
 Elasticsearch 是面向文档型数据库，一条数据在这里就是一个文档。为了方便大家理解，我们将 Elasticsearch 里存储文档数据和关系型数据库 MySQL 存储数据的概念进行一个类比ES 里的 Index 可以看做一个库，而 Types 相当于表，Documents 则相当于表的行。
 
@@ -27,7 +27,40 @@ Elasticsearch 是面向文档型数据库，一条数据在这里就是一个文
 |    IP类型    |                  ip                  |
 | 令牌计数类型 |             token_count              |
 
-其中嵌套类型nested会将数据进行扁平化处理（将嵌套的不同类型的数据转换为数组）
+## nested
+
+没有内部对象的概念，因此，ES在存储复杂类型的时候会把对象的复杂层次结果扁平化为一个键值对列表。
+
+比如：
+
+```
+PUT my-index/_doc/1
+{
+  "group" : "fans",
+  "user" : [ 
+    {
+      "first" : "John",
+      "last" :  "Smith"
+    },
+    {
+      "first" : "Alice",
+      "last" :  "White"
+    }
+  ]
+}
+```
+
+
+上面的文档被创建之后，user数组中的每个json对象会以下面的形式存储
+
+```
+{
+  "group" :        "fans",
+  "user.first" : [ "alice", "john" ],
+  "user.last" :  [ "smith", "white" ]
+}
+user.first和 user.last字段被扁平化为多值字段，first和 last之间的关联丢失。
+```
 
 # 基本操作
 
@@ -47,10 +80,10 @@ GET /_cat/indices：查看所有索引
 
 ### 增加文档
 
-在 customer 索引下的 exte
+在 customer 索引下的 external
 
 ```json
-PUT customer/external/1 
+PUT external/1 
 { 
 	"name": "John Doe" 
 }
@@ -70,7 +103,7 @@ PUT 必须指定 id；由于 PUT 需要指定 id，我们一般都用来做修�
 
 		//设置请求体并转为json
         User user = new User();
-        user.setUserName("zhangsan");
+        user.setName("John Doe");
         String jsonString = JSON.toJSONString(user);
         indexRequest.source(jsonString, XContentType.JSON);  //要保存的内容
 
@@ -83,7 +116,7 @@ PUT 必须指定 id；由于 PUT 需要指定 id，我们一般都用来做修�
 ### 查询文档 
 
 ```json
-GET customer/external/1
+GET external/1
 ```
 
 #### java
@@ -91,13 +124,13 @@ GET customer/external/1
 ```java
         //查询数据
         GetRequest request = new GetRequest();
-        request.index("user").id("1");
+        request.index("external").id("1");
         GetResponse getResponse = esClient.get(request, RequestOptions.DEFAULT)
 ```
 
 ### 更新文档
 ```json
-POST customer/external/1/_update
+POST external/1/_update
 { 
 
 "doc":{ 
@@ -106,14 +139,13 @@ POST customer/external/1/_update
 	}
 }
 或者
-POST customer/external/1
+POST external/1
 { 
 	"name": "John Doe2"
 }
 或者
-PUT customer/external/1
+PUT external/1
 { 
-
 	"name": "John Doe"
 }
 ```
@@ -135,7 +167,7 @@ PUT customer/external/1
 ### 删除文档
 
 ```json
-DELETE customer/external/1
+DELETE external/1
 ```
 
 #### java
@@ -169,27 +201,29 @@ POST /_bulk
         BulkResponse response = esClient.bulk(request, RequestOptions.DEFAULT);
 ```
 
-## 映射基本操作
+## 索引（映射）基本操作
 
-建索引库(index)中的映射了，类似于数据库(database)中的表结构(table)。创建数据库表需要**设置字段名称，类型，长度，约束等**；索引库也一样，需要知道这个类型下有哪些字段，每个字段有哪些约束信息，这就叫做映射(mapping)。
+indexs索引（映射），类似于数据库(database)中的表结构(table)。创建数据库表需要**设置字段名称，类型，长度，约束等**；索引库也一样，需要知道这个类型下有哪些字段，每个字段有哪些约束信息，这就叫做映射(mapping)。
 
 ### 创建映射
 
 ```json
-PUT /student/_mapping
+PUT /student
 {
-    "properties": {
-        "name":{
-            "type": "text",
-            "index": true
-        },
-        "sex":{
-            "type": "keyword",
-            "index": true
-        },
-        "age":{
-            "type": "keyword",
-            "index": false
+    "mappings": {
+        "properties": {
+            "name":{
+                "type": "text",
+                "index": true
+            },
+            "sex":{
+                "type": "keyword",
+                "index": true
+            },
+            "age":{
+                "type": "keyword",
+                "index": false
+            }
         }
     }
 }
@@ -380,6 +414,8 @@ GET gulimall_product/_search
 }
 
 ```
+
+user.first和 user.last字段被扁平化为多值字段，first和 last之间的关联丢失。
 
 #### 范围查询range
 
