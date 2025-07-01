@@ -161,17 +161,15 @@ public int[] sortedSquares(int[] nums) {
 - 数组中有负数时一般用不了滑动窗口
 
 ```java
-Set<Character> set = new HashSet<>();
-int low = 0, maxLen = 0;
-for (int i = 0; i < s.length(); i++){
-    while (set.contains(s.charAt(i))){
-        set.remove(s.charAt(low));
-        low++;
+int left = 0;
+for (int right = 0; right < s.length(); right++){
+    while (左滑窗口条件)){
+        //左滑触发的事件
+        left++;
     }
-    set.add(s.charAt(i));
-    maxLen = Math.max(set.size(), maxLen);
+    //右滑触发的事件
 }
-return maxLen;
+return ;
 ```
 
 904.水果成篮
@@ -311,51 +309,6 @@ dummy.next = head;
         return res;
     }
 ```
-
-
-
-# 贪心
-
-## 分配问题
-
-### 455、分饼干
-
-- 排序
-- 最优分配
-
-### 135、分糖果
-
-- 两次遍历分配
-
-### 122、股票交易2
-
-- 寻找极值
-
-## 区间问题
-
-### 435、不重叠区间
-
-- 排序
-- 遍历进行区间移除
-
-### 452、最少箭
-
-- 排序
-- 遍历查看是否溢出区间
-
-### 406、身高创建队列
-
-- 排序
-- 遍历并寻找插入位置
-
-### 605、存放花
-
-- 通过寻找区间的开始与结束划分区间
-
-### 763、划分字母区间
-
-- 统计信息（最后出现）
-- 通过寻找区间的开始与结束划分区间
 
 # 回溯
 
