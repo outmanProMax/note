@@ -15,6 +15,7 @@
 4、bash 输入 \ssh-keygen -t rsa -C "account email" 生成密钥
 5、创建并添加./ssh/config参数
 6、cat ~/.ssh/id_rsa.pub复制密钥并写入相应配置中心
+7、git clone和go mod tidy
 
 # Git常用命令
 
