@@ -12,7 +12,8 @@
 1、访达右上方显示路径栏
 2、进入用户文件路径并使用commmand+Shift+.显示隐藏文件
 3、修改./gitconfig参数
-4、修改./ssh/config参数
+4、bash 输入 \ssh-keygen -t rsa -C "account email" 生成密钥
+5、修改./ssh/config参数
 
 # Git常用命令
 
